@@ -63,7 +63,7 @@ pipeline {
         steps {
             sshagent(credentials: ['VPS_SSH']) {
                 sh '''
-                ssh -o StrictHostKeyChecking=no debian@popeye.kiko4da.fun <<EOF
+                ssh -p 4444 -o StrictHostKeyChecking=no debian@popeye.kiko4da.fun <<EOF
                     cd ~/jenkins || exit
                     docker-compose down
                     docker rmi -f kiko4/django_tutorial:latest
