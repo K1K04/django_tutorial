@@ -18,7 +18,7 @@ pipeline {
             stages {
                 stage('Clonar') {
                     steps {
-                        git branch: 'master', url: 'https://github.com/josedom24/django_tutorial.git'
+                        git branch: 'master', url: 'https://github.com/K1K04/django_tutorial.git'
                     }
                 }
                 stage('Instalar') {
