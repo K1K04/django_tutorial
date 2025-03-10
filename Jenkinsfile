@@ -1,6 +1,6 @@
 pipeline {
     environment {
-        IMAGEN = "kiko4/django_tutorial"
+        IMAGEN = "kiko4/django_tutorial:v2"
         LOGIN = 'USER_DOCKERHUB'
     }
     agent any
@@ -66,7 +66,7 @@ pipeline {
                 ssh -p 4444 -o StrictHostKeyChecking=no debian@popeye.kiko4da.fun <<EOF
                     cd ~/django_tutorial || exit
                     docker-compose down
-                    docker rmi -f kiko4/django_tutorial:latest
+                    docker rmi -f kiko4/django_tutorial:v2
                     docker-compose up -d --force-recreate
                 '''
             }
