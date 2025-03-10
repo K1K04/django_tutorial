@@ -1,7 +1,7 @@
 pipeline {
     environment {
         IMAGEN = "kiko4/django_tutorial"
-        LOGIN = 'DOCKERHUB'
+        LOGIN = 'USER_DOCKERHUB'
     }
     agent any
     stages {
