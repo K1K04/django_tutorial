@@ -1,34 +1,39 @@
-version: '3.8'
-
+version: '2.2'
 services:
-  web:
-    build: .
-    container_name: django_app
-    ports:
-      - "8000:8000"
-    depends_on:
-      - db
-    environment:
-      - DEBUG=True
-      - DB_HOST=db
-      - DB_NAME=django_db
-      - DB_USER=django_user
-      - DB_PASS=django_pass
-    volumes:
-      - .:/app
-
-  db:
-    image: postgres:13
-    container_name: postgres_db
+  app:
+    container_name: contenedor_python
+    build:
+      context: .  # Usa el Dockerfile en la carpeta actual
+      dockerfile: Dockerfile
+    image: prueba:1  # Esto permite que la imagen se etiquete correctamente
     restart: always
     environment:
-      POSTGRES_DB: django_db
-      POSTGRES_USER: django_user
-      POSTGRES_PASSWORD: django_pass
+      NAME: ${NAME}
+      USER: ${USER}
+      PASSWORD: ${PASS}
+      HOST: basededatos
+      DJ_USER: ${DJ_USER}
+      DJ_PASSWORD: ${DJ_PASSWORD}
+      DJ_EMAIL: ${DJ_EMAIL}
+      URL: ${URL}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS}
     ports:
-      - "5432:5432"
+      - "3000:3000"
+    depends_on:
+      - db
+
+  db:
+    container_name: basededatos
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${NAME}
+      MYSQL_USER: ${USER}
+      MYSQL_PASSWORD: ${PASS}
+      MYSQL_ROOT_PASSWORD: ${ROOT}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - mariadb_data1:/var/lib/mysql
 
 volumes:
-  postgres_data:
+  mariadb_data1:
+
