@@ -20,7 +20,7 @@ pipeline {
                 }
                 stage('Requirements') {
                     steps {
-                        sh 'pip install -r app/requirements.txt'
+                        sh 'pip install -r requirements.txt'
                     }
                 }
                 stage('Test')
