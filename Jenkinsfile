@@ -1,6 +1,6 @@
 pipeline {
     environment {
-        IMAGEN = "kiko4/django_tutorial:v2"
+        IMAGEN = "kiko4/django_tutorial"
         LOGIN = 'USER_DOCKERHUB'
     }
     agent any
@@ -38,7 +38,7 @@ pipeline {
                 stage('build') {
                     steps {
                         script {
-                            newApp = docker.build "$IMAGEN:latest"
+                            newApp = docker.build "$IMAGEN:v2"
                         }
                     }
                 }
@@ -53,7 +53,7 @@ pipeline {
                 }
                 stage('Borrar') {
                     steps {
-                        sh "docker rmi $IMAGEN:latest"
+                        sh "docker rmi $IMAGEN:v2"
                     }
                 }
             }
