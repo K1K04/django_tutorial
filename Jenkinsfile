@@ -4,11 +4,8 @@ pipeline {
         LOGIN = 'USER_DOCKERHUB'
     }
     agent any
-    triggers {
-        githubPush()
-    }
     stages {
-        stage("Pruebas") {
+        stage("Bajar_imagen") {
             agent {
                 docker {
                     image "python:3"
@@ -16,67 +13,71 @@ pipeline {
                 }
             }
             stages {
-                stage('Clonar') {
+                stage('Repositorio') {
                     steps {
-                        git branch: 'master', url: 'https://github.com/K1K04/django_tutorial.git'
+                        git branch:'master',url:'https://github.com/K1K04/django_tutorial.git'
                     }
                 }
-                stage('Instalar') {
+                stage('Requirements') {
                     steps {
-                        sh 'pip install -r requirements.txt'
+                        sh 'pip install -r app/requirements.txt'
                     }
                 }
-                stage('Test') {
+                stage('Test')
+                {
                     steps {
-                        sh 'python3 manage.py test'
+                        sh 'cd app && python manage.py test --settings=django_tutorial.desarrollo'
                     }
                 }
+
             }
         }
-        stage("Docker") {
+        stage("Gen_imagen") {
             agent any
             stages {
-                stage('Construir imagen') {
+                stage('build') {
                     steps {
                         script {
                             newApp = docker.build "$IMAGEN:latest"
                         }
                     }
                 }
-                stage('Subir imagen') {
+                stage('Subir') {
                     steps {
                         script {
-                            docker.withRegistry('', LOGIN) {
+                            docker.withRegistry( '', LOGIN ) {
                                 newApp.push()
                             }
                         }
                     }
                 }
-                stage('Eliminar imagen') {
+                stage('Borrar') {
                     steps {
                         sh "docker rmi $IMAGEN:latest"
                     }
                 }
             }
         }
-        stage('Despliegue en VPS') {
-            agent any
-            steps {
-                sshagent(credentials: ['VPS_SSH']) {
-                    sh 'ssh -p 4444 -o StrictHostKeyChecking=no debian@popeye.kiko4da.fun docker system prune -f'
-                    sh 'ssh -p 4444 -o StrictHostKeyChecking=no debian@popeye.kiko4da.fun docker image rm -f kiko4/django_tutorial:latest || true'
-                    sh 'ssh -p 4444 -o StrictHostKeyChecking=no debian@popeye.kiko4da.fun "cd /home/debian/django_tutorial && docker-compose down"'
-                    sh 'ssh -p 4444 -o StrictHostKeyChecking=no debian@popeye.kiko4da.fun "cd /home/debian/django_tutorial && docker-compose pull"'
-                    sh 'ssh -p 4444 -o StrictHostKeyChecking=no debian@popeye.kiko4da.fun "cd /home/debian/django_tutorial && docker-compose up -d"'
-                }
+        stage('VPS') {
+        agent any
+        steps {
+            sshagent(credentials: ['SSH']) {
+                sh '''
+                ssh -o StrictHostKeyChecking=no debian@popeye.kiko4da.fun <<EOF
+                    cd ~/jenkins || exit
+                    docker-compose down
+                    docker rmi -f kiko4/django_tutorial:latest
+                    docker-compose up -d --force-recreate
+                '''
             }
         }
+    }
     }
     post {
         always {
             mail to: 'kiko4da4@gmail.com',
-                subject: "Pipeline Django Tutorial: ${currentBuild.fullDisplayName}",
-                body: "El pipeline ${env.BUILD_URL} ha finalizado con resultado: ${currentBuild.result}"
+            subject: "Pipeline IC: ${currentBuild.fullDisplayName}",
+            body: "${env.BUILD_URL} has result ${currentBuild.result}"
         }
     }
 }
