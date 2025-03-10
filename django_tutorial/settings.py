@@ -26,7 +26,10 @@ SECRET_KEY = '9f0h)gozf$g%6igo8&767w1xro0adm+)msxe)!eic$!fhvynb8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+ALLOWED_HOSTS = ["*"]
+
+CSRF_TRUSTED_ORIGINS = [ 'python.kiko4da.fu']
+
 
 # Application definition
 
@@ -124,4 +127,3 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 DEFAULT_AUTO_FIELD='django.db.models.AutoField' 
-CSRF_TRUSTED_ORIGINS = [os.environ['URL']]
