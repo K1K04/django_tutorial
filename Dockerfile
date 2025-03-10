@@ -18,7 +18,7 @@ RUN pip install --upgrade --no-cache-dir --break-system-packages pip && \
     pip install --no-cache-dir --break-system-packages -r requirements.txt && \
     pip install --no-cache-dir --break-system-packages mysqlclient
 
-COPY script.sh /usr/local/bin/script.sh
+COPY script.sh /usr/local/bin/script.s
 RUN chmod +x /usr/local/bin/script.sh
 
 EXPOSE 3000
