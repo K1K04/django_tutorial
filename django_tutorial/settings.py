@@ -28,7 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-CSRF_TRUSTED_ORIGINS = [ 'python.kiko4da.fu']
+CSRF_TRUSTED_ORIGINS = [ 'python.kiko4da.fun']
 
 
 # Application definition
