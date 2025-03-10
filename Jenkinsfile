@@ -38,7 +38,7 @@ pipeline {
                 stage('build') {
                     steps {
                         script {
-                            newApp = docker.build "$IMAGEN:v2"
+                            newApp = docker.build "$IMAGEN:latest"
                         }
                     }
                 }
@@ -53,7 +53,7 @@ pipeline {
                 }
                 stage('Borrar') {
                     steps {
-                        sh "docker rmi $IMAGEN:v2"
+                        sh "docker rmi $IMAGEN:latest"
                     }
                 }
             }
@@ -66,7 +66,7 @@ pipeline {
                 ssh -p 4444 -o StrictHostKeyChecking=no debian@popeye.kiko4da.fun <<EOF
                     cd ~/django_tutorial || exit
                     docker-compose down
-                    docker rmi -f kiko4/django_tutorial:v2
+                    docker rmi -f kiko4/django_tutorial:latest
                     docker-compose up -d --force-recreate
                 '''
             }
