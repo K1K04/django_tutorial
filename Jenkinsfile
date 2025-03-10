@@ -26,7 +26,7 @@ pipeline {
                 stage('Test')
                 {
                     steps {
-                        sh 'cd app && python manage.py test --settings=django_tutorial.desarrollo'
+                        sh 'python manage.py test --settings=django_tutorial.desarrollo'
                     }
                 }
 
@@ -61,7 +61,7 @@ pipeline {
         stage('VPS') {
         agent any
         steps {
-            sshagent(credentials: ['SSH']) {
+            sshagent(credentials: ['VPS_SSH']) {
                 sh '''
                 ssh -o StrictHostKeyChecking=no debian@popeye.kiko4da.fun <<EOF
                     cd ~/jenkins || exit
