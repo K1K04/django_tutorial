@@ -4,6 +4,9 @@ pipeline {
         LOGIN = 'USER_DOCKERHUB'
     }
     agent any
+    triggers {
+        githubPush()
+    }
     stages {
         stage("Pruebas") {
             agent {
@@ -53,6 +56,18 @@ pipeline {
                     steps {
                         sh "docker rmi $IMAGEN:latest"
                     }
+                }
+            }
+        }
+        stage('Despliegue en VPS') {
+            agent any
+            steps {
+                sshagent(credentials: ['VPS_SSH']) {
+                    sh 'ssh -o StrictHostKeyChecking=no usuario@tu-vps.com docker system prune -f'
+                    sh 'ssh -o StrictHostKeyChecking=no usuario@tu-vps.com docker image rm -f kiko4/django_tutorial:latest || true'
+                    sh 'ssh -o StrictHostKeyChecking=no usuario@tu-vps.com "cd /home/debian/django_tutorial && docker-compose down"'
+                    sh 'ssh -o StrictHostKeyChecking=no usuario@tu-vps.com "cd /home/debian/django_tutorial && docker-compose pull"'
+                    sh 'ssh -o StrictHostKeyChecking=no usuario@tu-vps.com "cd /home/debian/django_tutorial && docker-compose up -d"'
                 }
             }
         }
