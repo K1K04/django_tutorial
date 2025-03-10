@@ -18,7 +18,7 @@ pipeline {
             stages {
                 stage('Clonar') {
                     steps {
-                        git branch:'master',url:'https://github.com/josedom24/django_tutorial.git'
+                        git branch: 'master', url: 'https://github.com/josedom24/django_tutorial.git'
                     }
                 }
                 stage('Instalar') {
@@ -63,11 +63,11 @@ pipeline {
             agent any
             steps {
                 sshagent(credentials: ['VPS_SSH']) {
-                    sh 'ssh -o StrictHostKeyChecking=no usuario@tu-vps.com docker system prune -f'
-                    sh 'ssh -o StrictHostKeyChecking=no usuario@tu-vps.com docker image rm -f kiko4/django_tutorial:latest || true'
-                    sh 'ssh -o StrictHostKeyChecking=no usuario@tu-vps.com "cd /home/debian/django_tutorial && docker-compose down"'
-                    sh 'ssh -o StrictHostKeyChecking=no usuario@tu-vps.com "cd /home/debian/django_tutorial && docker-compose pull"'
-                    sh 'ssh -o StrictHostKeyChecking=no usuario@tu-vps.com "cd /home/debian/django_tutorial && docker-compose up -d"'
+                    sh 'ssh -p 4444 -o StrictHostKeyChecking=no debian@popeye.kiko4da.fun docker system prune -f'
+                    sh 'ssh -p 4444 -o StrictHostKeyChecking=no debian@popeye.kiko4da.fun docker image rm -f kiko4/django_tutorial:latest || true'
+                    sh 'ssh -p 4444 -o StrictHostKeyChecking=no debian@popeye.kiko4da.fun "cd /home/debian/django_tutorial && docker-compose down"'
+                    sh 'ssh -p 4444 -o StrictHostKeyChecking=no debian@popeye.kiko4da.fun "cd /home/debian/django_tutorial && docker-compose pull"'
+                    sh 'ssh -p 4444 -o StrictHostKeyChecking=no debian@popeye.kiko4da.fun "cd /home/debian/django_tutorial && docker-compose up -d"'
                 }
             }
         }
@@ -75,8 +75,8 @@ pipeline {
     post {
         always {
             mail to: 'kiko4da4@gmail.com',
-            subject: "Pipeline Django Tutorial: ${currentBuild.fullDisplayName}",
-            body: "El pipeline ${env.BUILD_URL} ha finalizado con resultado: ${currentBuild.result}"
+                subject: "Pipeline Django Tutorial: ${currentBuild.fullDisplayName}",
+                body: "El pipeline ${env.BUILD_URL} ha finalizado con resultado: ${currentBuild.result}"
         }
     }
 }
