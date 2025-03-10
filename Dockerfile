@@ -1,20 +1,26 @@
-# Usa una imagen base con Python
-FROM python:3.9
+FROM python:3.12.1-bookworm
 
-# Establece el directorio de trabajo dentro del contenedor
-WORKDIR /app
+WORKDIR /usr/share/app
 
-# Copia los archivos necesarios al contenedor
-COPY requirements.txt .
-
-# Instala las dependencias de Python
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copia el código fuente de la aplicación
 COPY . .
 
-# Expone el puerto en el que correrá Django (normalmente 8000)
-EXPOSE 8000
+# Definir variables de entorno sin espacios alrededor del "="
+ENV NAME=django \
+    USER=django \
+    PASSWORD=django \
+    HOST=localhost \
+    DJ_USER=django \
+    DJ_PASSWORD=django \
+    DJ_EMAIL=kiko4da4@gmail.com \
+    URL=http://localhost
 
-# Comando para ejecutar el servidor de Django
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+RUN pip install --upgrade --no-cache-dir --break-system-packages pip && \
+    pip install --no-cache-dir --break-system-packages -r requirements.txt && \
+    pip install --no-cache-dir --break-system-packages mysqlclient
+
+COPY script.sh /usr/local/bin/script.sh
+RUN chmod +x /usr/local/bin/script.sh
+
+EXPOSE 3000
+
+CMD ["/usr/local/bin/script.sh"]
