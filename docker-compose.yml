@@ -5,7 +5,7 @@ services:
     build:
       context: .  # Usa el Dockerfile en la carpeta actual
       dockerfile: Dockerfile
-    image: prueba:1  # Esto permite que la imagen se etiquete correctamente
+    image: kiko4/django_practica:latest  # Esto permite que la imagen se etiquete correctamente
     restart: always
     environment:
       NAME: ${NAME}
